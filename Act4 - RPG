@@ -192,14 +192,22 @@ public class TestCharacter {
             System.out.println();
             
             if(p1.getCurrentLife() <= 0){
-                
+                if (p2.getCurrentLife() > 0) 
                 System.out.println(p2.getName()+" wins with " + p2.getCurrentLife() + " hp");
-                break;
+                
+                else if (p2.getCurrentLife() <= 0)
+                System.out.println(p2.getName()+" wins with 0 hp");
+                break; 
             }
             if(p2.getCurrentLife() <= 0){
+                if (p1.getCurrentLife() > 0)
                 System.out.println(p1.getName()+" wins with " + p1.getCurrentLife() + " hp");
+                
+                else if (p1.getCurrentLife() <= 0)
+                System.out.println(p1.getName()+" wins with 0 hp");
                 break;
-            }
         }
     }
 }
+}
+
