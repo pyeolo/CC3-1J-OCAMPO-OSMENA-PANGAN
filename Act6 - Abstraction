@@ -26,7 +26,6 @@ public class Wizard extends Character implements Weapon, Armour {
     @Override
     public int attack() {
         int a = dice.roll()*2;
-        currentMana += a;
         return a;
         
     }
@@ -49,7 +48,7 @@ public class Wizard extends Character implements Weapon, Armour {
     
     @Override
     public int useArmor(){
-        int h = 0;
+        int h = 5;
         if(currentMana >= 8){
             currentMana -= 8;
             h = dice.roll()*super.getStrength();
@@ -108,7 +107,7 @@ public abstract class Character {
     static Dice dice = new Dice();
     
     private String name;
-    private int strength;
+    protected int strength;
     protected int dexterity;
     protected int intelligence;
     private int maxLife;
@@ -280,14 +279,15 @@ public class CharacterDuel {
             System.out.println("Round "+i);
             System.out.println(p1.getName()+": "+p1.getCurrentLife()+ " HP");
             System.out.println(p3.getName()+": "+p3.getCurrentLife()+ " HP");
-            int damage1 = p1.useWeapon(), damage2 = p3.castLightningBolt(), damage3 = p3.useWeapon();
+            int damage1 = p1.useWeapon()+p1.attack(), damage2 = p3.castLightningBolt(), damage3 = p3.useWeapon()+p3.attack();
              
-            if(d.roll()<=3 && (p3.getCurrentLife()<(p3.getCurrentLife()*0.75))){
+            //WIZARD MOVE
+            if(d.roll()<=3 && (p3.getCurrentLife()<(p3.getMaxLife()*0.5))){
                 int p3Heal = p3.useArmor();
                 System.out.println(p3.getName() + " healed for " + p3Heal + " HP!");
             }
             else if(p3.getCurrentMana()<5){
-                System.out.println(p3.getName() + " hits " + p1.getName() + " with the staff for " + p3.useWeapon());
+                System.out.println(p3.getName() + " hits " + p1.getName() + " with the staff for " + damage3);
                 p1.wound(damage3);
             }
             else {
@@ -295,16 +295,19 @@ public class CharacterDuel {
                 p1.wound(damage2);
             }
             
-            if (d.roll()<=3 && (p1.getCurrentLife()<(p1.getCurrentLife()*0.75))){
+            //SCOUT MOVE
+            if (d.roll()<=3 && (p1.getCurrentLife()<(p1.getMaxLife()*0.5)) && p1.getCurrentLife() > 0){
                 int p1potion = p1.useArmor();
-                System.out.println(p1.getName() + " drank potion and recovered " + p1potion + "HP!");
+                System.out.println(p1.getName() + " drank coke and recovered " + p1potion + " HP!");
             }
             
-            else if(p1.getCurrentLife() > 0){
+            else if (p1.getCurrentLife() > 0){
                 System.out.println(p1.getName()+" hits "+p3.getName()+ " with a baseball bat for "+damage1);
                 p3.wound(damage1);
             }
             
+            
+            //VERDICT
             if(p1.getCurrentLife() <= 0 && p3.getCurrentLife() > 0){
                     System.out.println("-------------");
                     System.out.println(p1.getName() + "'s FINAL HP: " + p1.getCurrentLife());
@@ -318,13 +321,6 @@ public class CharacterDuel {
                 System.out.println(p3.getName() + "'s FINAL HP: " + p3.getCurrentLife());
                 System.out.println(p1.getName()+" wins!");
                 break;
-            }
-            else if(p3.getCurrentLife() == p1.getCurrentLife()){
-                    System.out.println("-------------");
-                    System.out.println(p1.getName() + "'s FINAL HP: " + p1.getCurrentLife());
-                    System.out.println(p3.getName() + "'s FINAL HP: " + p3.getCurrentLife());
-                    System.out.println(p3.getName()+" wins!");
-                    break;
             }
             System.out.println("  ");
         }
